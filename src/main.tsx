@@ -6,6 +6,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Root from './routes/root.tsx'
 import ErrorPage from './error-page.tsx'
 import ThemeContextProvider from './context/ThemeContextProvider.tsx'
+import { PrimeReactProvider, PrimeReactContext} from 'primereact/api'
 
 
 const router = createBrowserRouter([
@@ -26,8 +27,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeContextProvider>
-      <RouterProvider router={router}></RouterProvider>
-    </ThemeContextProvider>
+    <PrimeReactProvider>
+      <ThemeContextProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </ThemeContextProvider>
+    </PrimeReactProvider>
   </React.StrictMode>,
 )
