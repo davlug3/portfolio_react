@@ -13,13 +13,13 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root></Root>,
-    children: [
-      {
-        path: "video", 
-        element: <div>Video Route</div>
-      }
+    // children: [
+    //   {
+    //     path: "video", 
+    //     element: <div>Video Route</div>
+    //   }
 
-    ], 
+    // ], 
     errorElement: <ErrorPage></ErrorPage>
   },
 
