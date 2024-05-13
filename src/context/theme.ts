@@ -12,9 +12,7 @@ export const getDefaultTheme = ():  AppTheme =>  {
         if (localStorage.getItem("theme") == "dark") return "dark"
         if (localStorage.getItem("theme") == "light") return "light"
     }
-    else {
-        return theme
-    }
+    return theme
 }
 
 export const ThemeContext = createContext<[AppTheme,React.Dispatch<React.SetStateAction<AppTheme>> ] | null>(null);
