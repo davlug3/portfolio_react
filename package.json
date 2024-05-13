@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "npm run sync && vite",
-    "sync": "cp -r node_modules/primereact/resources/themes public", 
+    "sync": "cp -r node_modules/primereact/resources/themes public",
     "build": "npm run sync && tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "npm run sync && vite preview"
   },
   "dependencies": {
     "js-cookie": "^3.0.5",
+    "primeflex": "^3.3.1",
     "primereact": "^10.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

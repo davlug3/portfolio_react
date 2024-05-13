@@ -10,7 +10,7 @@ function Header() {
     }
 
   return (
-    <div>
+    <div className='surface-ground'>
       This is the header, {theme}
       <ToggleThemeButton></ToggleThemeButton>
     </div>
