@@ -6,7 +6,7 @@ function Header() {
 
   return (
     <div className='flex align-items-center surface-ground p-1 '>
-      <div className='font-bold'>THIS IS THE HEADER</div>
+      <div className='font-bold'>Header</div>
       <ToggleThemeButton className='p-1 mr-0 ml-auto'></ToggleThemeButton>
     </div>
   )

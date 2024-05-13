@@ -1,10 +1,11 @@
 import React from 'react'
 import { InputText } from 'primereact/inputtext'
+import { useAppSearch } from '../../context/app-search'
 
 export type SearchFieldType = {
     key: string, 
     label: string,
-    value: string, 
+    value: string | string[], 
     disabled: boolean, 
     as : string,
     emmit?: (e: React.FormEvent<HTMLInputElement>)=> void, 
@@ -13,19 +14,11 @@ export type SearchFieldType = {
 const componentMap : Record<string, React.ComponentType<any>> = {
     InputText : InputText
 }
+
+
 function SearchFields() {
-  const fields : SearchFieldType[] | [] = [
-    {
-        key: "My", 
-        as: "InputText", 
-        label: "My Label", 
-        value: "My Value", 
-        disabled: false, 
-        emmit: (e) => {
-            console.log("setter", e.target?.value)
-        }
-    }
-  ]
+  const [state, dispatch] = useAppSearch();
+  const { search_fields} = state;
 
 
   const changeMe = (e: React.FormEvent<HTMLInputElement>, callback: SearchFieldType["emmit"]) :void => {
@@ -39,12 +32,15 @@ function SearchFields() {
       <p>Search Fields</p>
 
         {
-            fields.map(field => {
+            search_fields.map((field , index)=> {
                 const DynamicElement = componentMap[field.as];
                 return (
-                    <div key={`field_${field.key}`}>
+                    <div className="flex flex-column" key={`field_${field.key}`}>
                         <label htmlFor="">{field.label}</label>
-                        <DynamicElement value={field.value} onChange={(e: React.FormEvent<HTMLInputElement>) => changeMe(e, field.emmit, )}></DynamicElement>
+                        <DynamicElement
+                          value={field.value}
+                          onChange={(e)=> dispatch({type: "UPDATE_SEARCH_FIELD_VALUE", payload: {key: index, value: e.target.value }})}>
+                        </DynamicElement>
                     </div>
                 )
             })
