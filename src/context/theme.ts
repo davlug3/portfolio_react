@@ -8,10 +8,11 @@ export const getDefaultTheme = ():  AppTheme =>  {
         theme = "dark" 
     }
 
-    try {
-        return localStorage.getItem("theme") == "dark" ? "dark" : theme
+    if (localStorage.getItem("theme")) {
+        if (localStorage.getItem("theme") == "dark") return "dark"
+        if (localStorage.getItem("theme") == "light") return "light"
     }
-    catch (e) {
+    else {
         return theme
     }
 }

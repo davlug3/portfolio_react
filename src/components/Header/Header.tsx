@@ -2,17 +2,12 @@ import React, { useContext } from 'react'
 import { ThemeContext, getDefaultTheme, useTheme } from '../../context/theme'
 import ToggleThemeButton from '../ToggleThemeButton/ToggleThemeButton';
 function Header() {
-    const [theme, setTheme] = useTheme();
 
-    const set_theme = () => {
-        if (theme==="dark") setTheme("light")
-        else setTheme("dark")
-    }
 
   return (
-    <div className='surface-ground'>
-      This is the header, {theme}
-      <ToggleThemeButton></ToggleThemeButton>
+    <div className='flex align-items-center surface-ground p-1 '>
+      <div className='font-bold'>THIS IS THE HEADER</div>
+      <ToggleThemeButton className='p-1 mr-0 ml-auto'></ToggleThemeButton>
     </div>
   )
 }

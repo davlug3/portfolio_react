@@ -7,8 +7,10 @@ function ThemeContextProvider({children}: {children: React.ReactNode}) {
   const [ theme, setTheme ] = useState<AppTheme>(getDefaultTheme());
 
   useEffect(()=> {
-    const el: HTMLLinkElement = document.getElementById('theme-link')
-    el.href = `themes/lara-${theme}-teal/theme.css`
+    console.log(theme);
+    const el: HTMLLinkElement = document.getElementById('theme-link');
+    el.href = `themes/lara-${theme}-teal/theme.css`;
+    localStorage.setItem("theme", theme);
   }, [theme] )
 
   return (

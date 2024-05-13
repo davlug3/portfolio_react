@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
 import { useTheme } from '../../context/theme'
+import { Button } from 'primereact/button';
 
-function ToggleThemeButton() {
+function ToggleThemeButton({className}: {className: string}) {
     const [theme, setTheme] = useTheme();
     
     const icon = useMemo(()=> {
-        return theme == "dark" ? "sun" : "moon"
+        return theme == "dark" ? "🌞" : "🌙"
     }, [theme])
 
     const toggle = () => {
@@ -13,7 +14,7 @@ function ToggleThemeButton() {
         if (theme=="light") setTheme("dark")
     }
     return (
-        <button onClick={toggle}>{icon}</button>
+        <Button className={`${className}`} severity="secondary" onClick={toggle}>{icon}</Button>
     )
 }
 
