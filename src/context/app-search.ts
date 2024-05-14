@@ -1,6 +1,6 @@
 import  { useContext } from "react";
 import { createContext } from "react";
-import { SearchFieldType } from "../components/SearchFields/SearchFields";
+import { SearchFieldOptionType, SearchFieldType } from "../components/SearchFields/SearchFields";
 export  type AppSearch = {
     search_fields: SearchFieldType[],
 }
@@ -20,10 +20,11 @@ export const useAppSearch = () => {
 
 
 export type AppSearchAction = {
-    type: "UPDATE_SEARCH_FIELD_VALUE" | "CLEAR_SEARCH_FIELD_VALUE";
+    type: "UPDATE_SEARCH_FIELD_VALUE" | "CLEAR_SEARCH_FIELD_VALUE" | "SET_OPTIONS";
     payload? : {
         key: string | number, 
-        value: string | string[];
+        value: string | string[]  | null,
+        options: SearchFieldOptionType[]
     }
 }
 
@@ -43,8 +44,29 @@ export const initialState: AppSearch = {
             value: "", 
             label: "Title", 
             disabled: false
+        },
+        {
+            key: "year", 
+            as: "MultiSelect", 
+            value: [], 
+            label: "Year", 
+            options: [], 
+            disabled: false
+        },
+        {
+            key: "tempo", 
+            as: "MultiSelect", 
+            value: [], 
+            label: "Tempo", 
+            options: [{
+                key: "slow", 
+                label: "Slow", 
+                disabled: false,
+            }], 
+            disabled: false
         }
-    ]
+    ], 
+   
 }
 
 export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch => {
@@ -68,8 +90,27 @@ export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch =
             return { 
                 ...state, 
                 search_fields: state.search_fields.map((x, i)=> {
-                    if (action.payload?.key == i) return {...x, value: ""}
+                    if (action.payload?.key == i) 
+                        return {...x, value: ""}
                     return {...x}
+                })
+            }
+        
+        case "SET_OPTIONS":
+            return {
+                ...state, 
+                search_fields: state.search_fields.map((x, i)=> {
+                    const options : SearchFieldOptionType[] | null = [];
+
+                    if (Array.isArray(action.payload?.options)) {
+                        action.payload?.options.forEach(y=> {
+                            options.push(y)
+                        })
+                    }
+
+                    if (action.payload?.key == i) 
+                        return { ...x, options }
+                    return { ...x}
                 })
             }
     }

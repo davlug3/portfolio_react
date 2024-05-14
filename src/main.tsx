@@ -8,6 +8,7 @@ import ErrorPage from './error-page.tsx'
 import ThemeContextProvider from './context/ThemeContextProvider.tsx'
 import { PrimeReactProvider} from 'primereact/api'
 import AppSearchContextProvider from "./context/AppSearchContextProvider.tsx"
+import DataContextProvider from './context/DataContextProvider.tsx'
 
 const router = createBrowserRouter([
   {
@@ -28,11 +29,13 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <PrimeReactProvider>
-      <AppSearchContextProvider>
-        <ThemeContextProvider>
-          <RouterProvider router={router}></RouterProvider>
-        </ThemeContextProvider>
-      </AppSearchContextProvider>
+      <DataContextProvider>
+        <AppSearchContextProvider>
+          <ThemeContextProvider>
+            <RouterProvider router={router}></RouterProvider>
+          </ThemeContextProvider>
+        </AppSearchContextProvider>
+      </DataContextProvider>
     </PrimeReactProvider>
   </React.StrictMode>,
 )
