@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState} from 'react'
 import { useAppSearch } from '../../context/app-search'
 import { useData } from '../../context/data'
-import { DataTable  } from 'primereact/datatable';
+import { DataTable, DataTableProps, SortOrder  } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator, PaginatorChangeEvent, PaginatorPageChangeEvent  } from 'primereact/paginator';
 import { Song } from '../../context/data';
@@ -17,12 +17,18 @@ function Table() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [visibleData, setVisibleData] = useState([]);
 
+    const [sortField, setSortField] = useState<string>('count'); 
+    const [sortOrder, setSortOrder] = useState<SortOrder>(-1);
+
+
     useEffect(()=> {
       const fetchData = async() => {
         const total = await db.songs.count()
         setTotalRecords(total);
 
         const data = await db.songs
+          .orderBy(sortField)
+          .reverse()
           .offset(first)
           .limit(rows) 
           .toArray();
@@ -31,7 +37,7 @@ function Table() {
       }
 
       fetchData();
-    }, [first, rows])
+    }, [first, rows, sortField, sortOrder])
 
 
 
@@ -50,14 +56,14 @@ function Table() {
 
   return (
     <div> 
-      {totalRecords}
-      <DataTable value={visibleData}>
-        <Column field="count" header="Score"></Column>
-        <Column field="title" header="Title"></Column>
-        <Column field="Artist" header="Artist"></Column>
-        <Column field="genre" header="Genre"></Column>
-        <Column field="year" header="Year"></Column>
-        <Column field="tempo" header="Tempo"></Column>
+      {/* {sortOrder} */}
+      <DataTable value={visibleData} sortField={sortField} sortOrder={sortOrder}>
+        <Column field="count" header="Score" sortable></Column>
+        <Column field="title" header="Title" sortable></Column>
+        <Column field="Artist" header="Artist" sortable></Column>
+        <Column field="genre" header="Genre" sortable></Column>
+        <Column field="year" header="Year" sortable></Column>
+        <Column field="tempo" header="Tempo" sortable></Column>
       </DataTable>
 
 
