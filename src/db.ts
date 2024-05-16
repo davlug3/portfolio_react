@@ -29,15 +29,10 @@ db.open().then(function(db) {
 export async function populate () {
     console.log("sdfsdfds", await db.songs.count());
     if (!(await db.songs.count())) {
-        console.log(113123);
-        console.log("fetching...");
         const res = await fetch("test.json")
         const data = await res.json()
-            console.log("done.");
 
         if (Array.isArray(data?.data)) {
-            console.log("dave");
-
             db.songs.bulkAdd(
                 data.data
                 .filter((x: unknown, i: number) => (i> 10))

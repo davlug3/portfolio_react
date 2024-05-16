@@ -1,10 +1,12 @@
-import React, { useMemo, useState} from 'react'
+import React, { useEffect, useMemo, useState} from 'react'
 import { useAppSearch } from '../../context/app-search'
 import { useData } from '../../context/data'
 import { DataTable  } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator, PaginatorChangeEvent, PaginatorPageChangeEvent  } from 'primereact/paginator';
 import { Song } from '../../context/data';
+import { db } from '../../db';
+
 function Table() {
     const [searchState, searchDispatch] = useAppSearch();
     const [dataState, dataDispatch] = useData();
@@ -12,18 +14,35 @@ function Table() {
     const [first, setFirst ] = useState(0)
     const [rows, setRows] = useState(100)
 
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [visibleData, setVisibleData] = useState([]);
+
+    useEffect(()=> {
+      const fetchData = async() => {
+        const total = await db.songs.count()
+        setTotalRecords(total);
+
+        const data = await db.songs
+          .offset(first)
+          .limit(rows) 
+          .toArray();
+
+        setVisibleData(data);
+      }
+
+      fetchData();
+    }, [first, rows])
 
 
 
-    const visibleData = useMemo<Song[]>(() => {
-      return dataState.data.filter((x, i)=> {
-        const cond_paging = i >= first && i < first+rows
+    // const visibleData = useMemo<Song[]>(() => {
+    //   return dataState.data.filter((x, i)=> {
+    //     const cond_paging = i >= first && i < first+rows
 
-        return cond_paging
-      })
-    }, [dataState.data, first, rows])
-
-
+    //     return cond_paging
+    //   })
+    // }, [dataState.data, first, rows])
+    
     const onPageChange = (event: PaginatorPageChangeEvent ) => {
       setFirst(event.first);
       setRows(event.rows);
@@ -31,6 +50,7 @@ function Table() {
 
   return (
     <div> 
+      {totalRecords}
       <DataTable value={visibleData}>
         <Column field="count" header="Score"></Column>
         <Column field="title" header="Title"></Column>
@@ -41,7 +61,7 @@ function Table() {
       </DataTable>
 
 
-      <Paginator first={first} rows={rows} totalRecords={dataState.data.length} onPageChange={onPageChange}></Paginator>
+      <Paginator first={first} rows={rows} totalRecords={totalRecords} onPageChange={onPageChange}></Paginator>
     </div>
   )
 }
