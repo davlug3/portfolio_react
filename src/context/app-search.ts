@@ -19,14 +19,38 @@ export const useAppSearch = () => {
 
 
 
-export type AppSearchAction = {
-    type: "UPDATE_SEARCH_FIELD_VALUE" | "CLEAR_SEARCH_FIELD_VALUE" | "SET_OPTIONS";
-    payload? : {
+
+
+////////////////
+type AppSearchAction_Update_Search_Field_Value = {
+    type: "UPDATE_SEARCH_FIELD_VALUE", 
+    payload: {
         key: string | number, 
-        value: string | string[]  | null,
-        options: SearchFieldOptionType[]
+        value: string | string[] | null
     }
 }
+
+type AppSearchAction_Clear_Search_Field_Value = {
+    type: "CLEAR_SEARCH_FIELD_VALUE", 
+    payload: {
+        key: string | number 
+    }
+}
+
+type AppSearchAction_Set_Options = {
+    type: "SET_OPTIONS", 
+    payload: {
+        key: string | number,
+        options: SearchFieldOptionType[], 
+    }
+}
+
+
+export type AppSearchAction = 
+   AppSearchAction_Update_Search_Field_Value |  
+   AppSearchAction_Clear_Search_Field_Value | 
+   AppSearchAction_Set_Options;
+
 
 
 export const initialState: AppSearch = {
@@ -85,10 +109,11 @@ export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch =
                 ...state,
                 search_fields: state.search_fields.map((x, i)=> {
 
-                    if (action.payload) {
+                    if (action.payload && action.payload?.value) {
                         if (i==action.payload.key) return {...x, value: action.payload.value}
 
                     }
+
                     return { ...x}
                })
             }
