@@ -39,9 +39,9 @@ function SearchFields() {
       const tempos =  db.getDistinctTempos();
       
       const x  = await Promise.all([genres, years, tempos])
-      dispatch({type: "SET_OPTIONS", payload: {key: 3, value: null, options: x[2].map(o => ({key: o, label: o, disabled: false })) } })
-      dispatch({type: "SET_OPTIONS", payload: {key: 2, value: null, options: x[1].map(o => ({key: o, label: o, disabled: false })) } })
-      dispatch({type: "SET_OPTIONS", payload: {key: 4, value: null, options: x[0].map(o => ({key: o, label: o, disabled: false })) } })
+      dispatch({type: "SET_OPTIONS", payload: {key: 3, value: null, options: x[2]}})
+      dispatch({type: "SET_OPTIONS", payload: {key: 2, value: null, options: x[1]}})
+      dispatch({type: "SET_OPTIONS", payload: {key: 4, value: null, options: x[0]}})
     }
 
     fetchDropdowns()

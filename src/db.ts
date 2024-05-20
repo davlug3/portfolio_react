@@ -1,6 +1,7 @@
 import Dexie, { IndexableTypeArray, Table }  from "dexie";
 import { Song } from "./context/data";
 import { SongDataFromApi } from "./routes/root";
+import { SearchFieldOptionType } from "./components/SearchFields/SearchFields";
 
 
 
@@ -15,22 +16,39 @@ export class MySubClassedDexie extends Dexie {
     }
 
 
-    async getDistinctGenres() : Promise<string[]> {
+    async getDistinctGenres() : Promise<SearchFieldOptionType[]> {
         const keys: IndexableTypeArray = await this.songs.orderBy("genre").uniqueKeys();
         const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
-        return  genres;
+        return  genres.map(x=> ({key: x, disabled: false, label: x}));
     }
 
-    async getDistinctYears() : Promise<string[]> {
-        const keys: IndexableTypeArray = await this.songs.orderBy("year").uniqueKeys();
-        const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
-        return  genres;
+    async getDistinctYears() : Promise<SearchFieldOptionType[]> {
+        // const keys: IndexableTypeArray = await this.songs.orderBy("year").uniqueKeys();
+        // const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
+        // const set = new Set([...genres.map(x=> {
+        //     let temp = x.replace(/\D/g, '');
+        //     if (temp.length===2) temp = `19${temp}`;
+        //     return temp 
+        // })]);
+
+        return [
+            {key: "40", label: "1940", disabled: false},
+            {key: "50", label: "1950", disabled: false},
+            {key: "60", label: "1960", disabled: false},
+            {key: "70", label: "1970", disabled: false},
+            {key: "80", label: "1980", disabled: false},
+            {key: "90", label: "1990", disabled: false},
+            {key: "00", label: "2000", disabled: false},
+            {key: "10", label: "2010", disabled: false},
+            {key: "20", label: "2020", disabled: false},
+        ];
+
     }
 
-    async getDistinctTempos() : Promise<string[]> {
+    async getDistinctTempos() : Promise<SearchFieldOptionType[]> {
         const keys: IndexableTypeArray = await this.songs.orderBy("tempo").uniqueKeys();
         const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
-        return  genres;
+        return  genres.map(x=>({key:x, disabled: false, label: x}) );
     }
 }
 
