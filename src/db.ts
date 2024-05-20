@@ -23,14 +23,6 @@ export class MySubClassedDexie extends Dexie {
     }
 
     async getDistinctYears() : Promise<SearchFieldOptionType[]> {
-        // const keys: IndexableTypeArray = await this.songs.orderBy("year").uniqueKeys();
-        // const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
-        // const set = new Set([...genres.map(x=> {
-        //     let temp = x.replace(/\D/g, '');
-        //     if (temp.length===2) temp = `19${temp}`;
-        //     return temp 
-        // })]);
-
         return [
             {key: "40", label: "1940", disabled: false},
             {key: "50", label: "1950", disabled: false},
