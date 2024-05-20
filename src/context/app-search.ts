@@ -64,6 +64,14 @@ export const initialState: AppSearch = {
                 disabled: false,
             }], 
             disabled: false
+        }, 
+        {
+            key: "genre", 
+            as: "MultiSelect", 
+            value: [], 
+            label: "Genre", 
+
+            disabled: false
         }
     ], 
    
@@ -101,12 +109,14 @@ export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch =
                 ...state, 
                 search_fields: state.search_fields.map((x, i)=> {
                     const options : SearchFieldOptionType[] | null = [];
-
+                    
                     if (Array.isArray(action.payload?.options)) {
                         action.payload?.options.forEach(y=> {
                             options.push(y)
                         })
                     }
+                    console.log("options: ", options,  i);
+                    console.log("action.payload?.key : ", action.payload?.key );
 
                     if (action.payload?.key == i) 
                         return { ...x, options }

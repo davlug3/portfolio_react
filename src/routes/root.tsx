@@ -1,6 +1,6 @@
 import Header from '../components/Header/Header'
 import Body from "../components/Body/Body"
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useData } from '../context/data';
 
 import { db, populate } from "./../db"
@@ -21,14 +21,21 @@ export interface SongDataFromApi {
 }
 
 function Root () {
+    const [loading, setLoading] = useState(true);
+
+
     useEffect(()=> {
-      populate();
+      const initializeDb = async () => {
+        await db.open()
+        populate(setLoading);
+      }
+      initializeDb();
     }, []);
 
   return (
     <div>
         <Header></Header>
-        <Body></Body>
+        <Body loading={loading}></Body>
     </div>
   )
 }

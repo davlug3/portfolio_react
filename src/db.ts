@@ -1,4 +1,4 @@
-import Dexie, { Table }  from "dexie";
+import Dexie, { IndexableTypeArray, Table }  from "dexie";
 import { Song } from "./context/data";
 import { SongDataFromApi } from "./routes/root";
 
@@ -13,26 +13,38 @@ export class MySubClassedDexie extends Dexie {
             songs: "Id, Artist, christmas, opm, count, genre, tempo,title, year"
         })
     }
+
+
+    async getDistinctGenres() : Promise<string[]> {
+        const keys: IndexableTypeArray = await this.songs.orderBy("genre").uniqueKeys();
+        const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
+        return  genres;
+    }
+
+    async getDistinctYears() : Promise<string[]> {
+        const keys: IndexableTypeArray = await this.songs.orderBy("year").uniqueKeys();
+        const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
+        return  genres;
+    }
+
+    async getDistinctTempos() : Promise<string[]> {
+        const keys: IndexableTypeArray = await this.songs.orderBy("tempo").uniqueKeys();
+        const genres  : string[] = keys.filter((key): key is string => typeof key ==='string');
+        return  genres;
+    }
 }
 
 export const db= new MySubClassedDexie();
 
 
-db.on("populate", populate)
 
-db.open().then(function(db) {
-    console.log("sdf", db);
-}).catch(function (db) {
-    console.log("db: ", db);
-})
-
-export async function populate () {
-    console.log("sdfsdfds", await db.songs.count());
+export async function populate (setLoading: (loading: boolean)=> void) {
     if (!(await db.songs.count())) {
         const res = await fetch("test.json")
         const data = await res.json()
 
         if (Array.isArray(data?.data)) {
+            setLoading(true);
             db.songs.bulkAdd(
                 data.data
                 .filter((x: unknown, i: number) => (i> 10))
@@ -54,6 +66,7 @@ export async function populate () {
             )
         }
     }
+    setLoading(false);
 }
 
 
