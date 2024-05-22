@@ -27,14 +27,30 @@ function Table() {
         const total = await db.songs.count()
         setTotalRecords(total);
 
+        // const data = await db.songs
+        // .where(Object.keys(searchState.search_fields))
+        // .startsWithAnyOfIgnoreCase(Object.keys(searchState.search_fields).map((x:unknown)=> ("love")))
+        // .reverse()
+        // .offset(first)
+        // .limit(rows)
+        // .toArray();
+        // console.log("data: ", data);
+
         const data = await db.songs
-        .where('title')
-        .startsWithAnyOf(["love", 'hello'])
-        .reverse()
-        .offset(first)
-        .limit(rows)
-        .toArray();
-        console.log("data: ", data);
+        .filter((song: Song)=> {
+          const returnThis:boolean[] = []
+          Object.keys(searchState.search_fields).forEach((field:string)=> {
+            const subReturnThis:boolean[] = []
+            if (Array.isArray(searchState.search_fields[field].value)) {
+              searchState.search_fields[field].value.forEach((element:string) => {
+                subReturnThis.push((new RegExp(element)).test(song[field === 'artist' ? 'Artist' : field]))
+              });
+            }
+            returnThis.push(subReturnThis.reduce((prev, curr)=> prev || curr, false))
+          })
+          return returnThis.reduce((prev, curr)=> prev && curr, true)
+        })
+        .toArray()
 
         setVisibleData(data);
       }
