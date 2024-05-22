@@ -21,23 +21,24 @@ function Table() {
     const [sortOrder, setSortOrder] = useState<SortOrder>(-1);
 
 
-    useEffect(()=> {
-      const fetchData = async() => {
-        const total = await db.songs.count()
-        setTotalRecords(total);
+    // useEffect(()=> {
+    //   console.log("useeffect in Table.ts");
+    //   const fetchData = async() => {
+    //     const total = await db.songs.count()
+    //     setTotalRecords(total);
 
-        const data = await db.songs
-          .orderBy(sortField)
-          .reverse()
-          .offset(first)
-          .limit(rows) 
-          .toArray();
+    //     const data = await db.songs
+    //       .orderBy(sortField)
+    //       .reverse()
+    //       .offset(first)
+    //       .limit(rows) 
+    //       .toArray();
 
-        setVisibleData(data);
-      }
+    //     setVisibleData(data);
+    //   }
 
-      fetchData();
-    }, [first, rows, sortField, sortOrder])
+    //   fetchData();
+    // }, [first, rows, sortField, sortOrder])
 
 
 
