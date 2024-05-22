@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 import { InputText } from 'primereact/inputtext'
+import { Button } from 'primereact/button'
 import { useAppSearch } from '../../context/app-search'
 import { MultiSelect } from 'primereact/multiselect'
 import { db } from '../../db'
 
 export type SearchFieldType = {
-    key: string, 
+    order: number, 
     label: string,
     value: string | string[], 
+    stage: string | string[], 
     disabled: boolean, 
     as : string,
     emmit?: (e: React.FormEvent<HTMLInputElement>)=> void,
@@ -30,6 +32,7 @@ const componentMap : Record<string, React.ComponentType<any>> = {
 function SearchFields() {
   const [state, dispatch] = useAppSearch();
   const { search_fields} = state;
+  console.log("search_fields: ", search_fields);
 
 
   useEffect(()=> {
@@ -39,9 +42,9 @@ function SearchFields() {
       const tempos =  db.getDistinctTempos();
       
       const x  = await Promise.all([genres, years, tempos])
-      dispatch({type: "SET_OPTIONS", payload: {key: 3, value: null, options: x[2]}})
-      dispatch({type: "SET_OPTIONS", payload: {key: 2, value: null, options: x[1]}})
-      dispatch({type: "SET_OPTIONS", payload: {key: 4, value: null, options: x[0]}})
+      dispatch({type: "SET_OPTIONS", payload: {key: "genre", options: x[0]}})
+      dispatch({type: "SET_OPTIONS", payload: {key: "year", options: x[1]}})
+      dispatch({type: "SET_OPTIONS", payload: {key: "tempo", options: x[2]}})
     }
 
     fetchDropdowns()
@@ -58,20 +61,28 @@ function SearchFields() {
     <div className='flex flex-wrap'>
 
         {
-            search_fields.map((field , index)=> {
-                const DynamicElement = componentMap[field.as];
+            Object.keys(search_fields).map((key)=> {
+
+                
+
+                const field = search_fields[key]
+                const DynamicElement = componentMap[search_fields[key].as];
+                if (!DynamicElement) return <div key={key}>ERRROORRRR</div>
+                console.log("DynamicElement: ", key,  DynamicElement, search_fields[key]);
                 return (
-                    <div className="flex flex-column min-w-min flex-1 max-w-full p-1 mb-2" key={`field_${field.key}`}>
+                  
+                    <div className="flex flex-column min-w-min flex-1 max-w-full p-1 mb-2" key={`field_${key}`}>
                         <label htmlFor="">{field.label}</label>
                         <DynamicElement
-                          value={field.value}
+                          value={field.stage}
                           options={field.options}
-                          onChange={(e)=> dispatch({type: "UPDATE_SEARCH_FIELD_VALUE", payload: {key: index, value: e.target.value }})}>
+                          onChange={(e: unknown)=> dispatch({type: "UPDATE_SEARCH_FIELD_STAGE", payload: {key, value: e.target.value }})}>
                         </DynamicElement>
                     </div>
                 )
             })
         }
+        { <Button label='Search' className={`w-full mb-2`} onClick={() => dispatch({type: "SYNC_VALUE"})}></Button>  }
 
     </div>
   )

@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 public/themes/*
+.aider*
+
+.env
