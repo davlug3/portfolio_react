@@ -28,15 +28,6 @@ function Table() {
         const total = await db.songs.count()
         setTotalRecords(total);
 
-        // const data = await db.songs
-        // .where(Object.keys(searchState.search_fields))
-        // .startsWithAnyOfIgnoreCase(Object.keys(searchState.search_fields).map((x:unknown)=> ("love")))
-        // .reverse()
-        // .offset(first)
-        // .limit(rows)
-        // .toArray();
-        // console.log("data: ", data);
-
         const data = await db.songs
         .filter((song: Song)=> {
             

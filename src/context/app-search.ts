@@ -1,10 +1,11 @@
-import  { act, useContext } from "react";
-import { createContext } from "react";
+import { useContext, createContext } from "react";
 import { SearchFieldOptionType, SearchFieldType } from "../components/SearchFields/SearchFields";
+import { localStorageHelper } from "../helper/localStorage";
 export  type AppSearch = {
     search_fields: Record<string,SearchFieldType>
 }
 
+const [getLocalStorage ] = localStorageHelper()
 export const AppSearchContext = createContext<[AppSearch, React.Dispatch<AppSearchAction>] | null>(null)
 
 
@@ -26,7 +27,7 @@ type AppSearchAction_Update_Search_Field_Stage = {
     type: "UPDATE_SEARCH_FIELD_STAGE", 
     payload: {
         key: string, 
-        value: string | string[] | null
+        value: string | SearchFieldOptionType[] | null
     }
 }
 
@@ -67,7 +68,7 @@ export const initialState: AppSearch = {
             order: 0, 
             as: "InputText", 
             value: "", 
-            stage: "",
+            stage: getLocalStorage('artist') as string ?? ''  , 
             label: "Artist", 
             disabled: false, 
       }, 
@@ -75,7 +76,7 @@ export const initialState: AppSearch = {
             order: 1,
             as: "InputText", 
             value: "", 
-            stage: "",
+            stage:  getLocalStorage('title') as string ?? '', 
             label: "Title", 
             disabled: false
       },
@@ -83,7 +84,7 @@ export const initialState: AppSearch = {
             order: 2, 
             as: "MultiSelect", 
             value: [], 
-            stage: [], 
+            stage: getLocalStorage("year") ?? [] , 
             label: "Year", 
             options: [], 
             disabled: false
@@ -93,7 +94,7 @@ export const initialState: AppSearch = {
             order: 3,
             as: "MultiSelect", 
             value: [], 
-            stage: [], 
+            stage: getLocalStorage("tempo") ?? [], 
             label: "Tempo", 
             options: [{
                 key: "slow", 
@@ -107,85 +108,12 @@ export const initialState: AppSearch = {
             order: 4,
             as: "MultiSelect", 
             value: [], 
-            stage: [], 
+            stage: getLocalStorage("genre") ?? [] ,
             label: "Genre", 
             disabled: false
       }
-
     } 
-        
-      
-   
 }
-
-// export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch => {
-//     console.log("dsdfs", action);
-//     switch (action.type)  {
-//         case "UPDATE_SEARCH_FIELD_STAGE":
-//             return {
-//                 ...state,
-//                 search_fields: state.search_fields.map((x, i)=> {
-
-//                     if (action.payload && action.payload?.value) {
-//                         if (i==action.payload.key) return {...x, stage: action.payload.value}
-
-//                     }
-
-//                     return { ...x}
-//                })
-//             }
-        
-
-//         case "CLEAR_SEARCH_FIELD_STAGE": 
-//             return { 
-//                 ...state, 
-//                 search_fields: state.search_fields.map((x, i)=> {
-//                     if (action.payload?.key == i) 
-//                         return {...x, stage: ""}
-//                     return {...x}
-//                 })
-//             }
-        
-//         case "SET_OPTIONS":
-//             return {
-//                 ...state, 
-//                 search_fields: state.search_fields.map((x, i)=> {
-//                     const options : SearchFieldOptionType[] | null = [];
-                    
-//                     if (Array.isArray(action.payload?.options)) {
-//                         action.payload?.options.forEach(y=> {
-//                             options.push(y)
-//                         })
-//                     }
-//                     console.log("options: ", options,  i);
-//                     console.log("action.payload?.key : ", action.payload?.key );
-
-//                     if (action.payload?.key == i) 
-//                         return { ...x, options }
-//                     return { ...x}
-//                 })
-//             }
-
-//         case "SYNC_VALUE":
-//             return {
-//                 ...state, 
-//                 search_fields: state.search_fields.map((x, i)=> {
-//                     if (action.payload) {
-//                         if (action.payload.key == i) 
-//                             return {
-//                                     ...x, value: x.stage
-//                                 }
-//                         return { ...x }
-    
-//                     }
-//                     else {
-//                         return { ...x, value: x.stage }
-//                     }
-//               })
-//             }
-
-//     }
-// }
 
 
 
@@ -199,9 +127,9 @@ console.log();action.payload
                     ...state.search_fields,
                     [action.payload.key] : {
                         ...state.search_fields[action.payload.key],
-                        stage: action.payload.value !== null ? action.payload.value : [''] 
+                        stage: action.payload.value !== null ? action.payload.value : [] 
                     }
-                }
+               }
             };
 
         case "CLEAR_SEARCH_FIELD_STAGE":
@@ -211,7 +139,7 @@ console.log();action.payload
                     ...state.search_fields,
                     [action.payload.key]: {
                         ...state.search_fields[action.payload.key],
-                        stage: ['']
+                        stage: []
                     }
                 }
             };
@@ -236,7 +164,9 @@ console.log();action.payload
                     key,
                     { 
                         ...field,
-                        value: state.search_fields[key].stage
+                        value: Array.isArray(state.search_fields[key].stage) ?
+                            (state.search_fields[key].stage as SearchFieldOptionType[]).map(x=> x.key ) : 
+                            state.search_fields[key].stage as string
                     }
                 ])
                 )

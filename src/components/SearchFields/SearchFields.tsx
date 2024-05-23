@@ -5,13 +5,13 @@ import { useAppSearch } from '../../context/app-search'
 import { MultiSelect } from 'primereact/multiselect'
 import { db } from '../../db'
 import { InputTextProps } from 'primereact/inputtext'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { localStorageHelper } from '../../helper/localStorage'
 
 export type SearchFieldType = {
     order: number, 
     label: string,
     value: string | string[], 
-    stage: string | string[], 
+    stage: string | SearchFieldOptionType[], 
     disabled: boolean, 
     as : string,
     emmit?: (e: React.FormEvent<HTMLInputElement>)=> void,
@@ -34,10 +34,7 @@ const componentMap : Record<string, React.ForwardRefExoticComponent<InputTextPro
 function SearchFields() {
   const [state, dispatch] = useAppSearch();
   const { search_fields} = state;
-
-  console.log("search_fields: ", search_fields);
-
-
+  const [getLocalStorage, setLocalStorage] = localStorageHelper();
   useEffect(()=> {
     const fetchDropdowns = async () => {
       const genres = db.getDistinctGenres();
@@ -80,8 +77,7 @@ function SearchFields() {
                           options={field.options}
                           onChange={
                             (e: unknown)=> {
-                              console.log("c", e.target);
-                              useLocalStorage({action: "SET", payload: {key, value: e.target.value}})
+                              setLocalStorage(key, e.target.value);
                               dispatch({type: "UPDATE_SEARCH_FIELD_STAGE", payload: {key, value: e.target.value }}) 
                             }
                           }>
@@ -91,6 +87,15 @@ function SearchFields() {
             })
         }
         { <Button label='Search' className={`w-full mb-2`} onClick={() => dispatch({type: "SYNC_VALUE"})}></Button>  }
+        { <Button label='Clear Fields' severity={'danger'} className={`w-full mb-2`} onClick={
+          () => {
+            Object.keys(search_fields).forEach(field => {
+              setLocalStorage(field, typeof search_fields[field].stage === 'string' ? '' : []);
+              dispatch({type: "UPDATE_SEARCH_FIELD_STAGE", payload: {key: field, value: typeof search_fields[field].stage === 'string' ? '' : []}});
+              
+            })
+          }
+          }></Button>  }
         </form>
     </div>
   )
