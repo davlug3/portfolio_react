@@ -118,10 +118,79 @@ export const initialState: AppSearch = {
    
 }
 
+// export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch => {
+//     console.log("dsdfs", action);
+//     switch (action.type)  {
+//         case "UPDATE_SEARCH_FIELD_STAGE":
+//             return {
+//                 ...state,
+//                 search_fields: state.search_fields.map((x, i)=> {
+
+//                     if (action.payload && action.payload?.value) {
+//                         if (i==action.payload.key) return {...x, stage: action.payload.value}
+
+//                     }
+
+//                     return { ...x}
+//                })
+//             }
+        
+
+//         case "CLEAR_SEARCH_FIELD_STAGE": 
+//             return { 
+//                 ...state, 
+//                 search_fields: state.search_fields.map((x, i)=> {
+//                     if (action.payload?.key == i) 
+//                         return {...x, stage: ""}
+//                     return {...x}
+//                 })
+//             }
+        
+//         case "SET_OPTIONS":
+//             return {
+//                 ...state, 
+//                 search_fields: state.search_fields.map((x, i)=> {
+//                     const options : SearchFieldOptionType[] | null = [];
+                    
+//                     if (Array.isArray(action.payload?.options)) {
+//                         action.payload?.options.forEach(y=> {
+//                             options.push(y)
+//                         })
+//                     }
+//                     console.log("options: ", options,  i);
+//                     console.log("action.payload?.key : ", action.payload?.key );
+
+//                     if (action.payload?.key == i) 
+//                         return { ...x, options }
+//                     return { ...x}
+//                 })
+//             }
+
+//         case "SYNC_VALUE":
+//             return {
+//                 ...state, 
+//                 search_fields: state.search_fields.map((x, i)=> {
+//                     if (action.payload) {
+//                         if (action.payload.key == i) 
+//                             return {
+//                                     ...x, value: x.stage
+//                                 }
+//                         return { ...x }
+    
+//                     }
+//                     else {
+//                         return { ...x, value: x.stage }
+//                     }
+//               })
+//             }
+
+//     }
+// }
 
 
 
 export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch => {
+console.log();action.payload
     switch (action.type) {
         case "UPDATE_SEARCH_FIELD_STAGE": 
             return {
@@ -165,7 +234,10 @@ export const reducer = (state: AppSearch, action: AppSearchAction) : AppSearch =
                 search_fields: Object.fromEntries(
                 Object.entries(state.search_fields).map(([key, field]) => [
                     key,
-                    { ...field, value: state.search_fields[key].stage }
+                    { 
+                        ...field,
+                        value: state.search_fields[key].stage
+                    }
                 ])
                 )
             };

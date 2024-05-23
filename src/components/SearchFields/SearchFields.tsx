@@ -63,12 +63,9 @@ function SearchFields() {
         {
             Object.keys(search_fields).map((key)=> {
 
-                
-
                 const field = search_fields[key]
                 const DynamicElement = componentMap[search_fields[key].as];
                 if (!DynamicElement) return <div key={key}>ERRROORRRR</div>
-                console.log("DynamicElement: ", key,  DynamicElement, search_fields[key]);
                 return (
                   
                     <div className="flex flex-column min-w-min flex-1 max-w-full p-1 mb-2" key={`field_${key}`}>

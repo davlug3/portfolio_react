@@ -5,6 +5,10 @@ import { DataTable, DataTableProps, SortOrder  } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Paginator, PaginatorChangeEvent, PaginatorPageChangeEvent  } from 'primereact/paginator';
 import { db } from '../../db';
+import { SearchFieldOptionType } from '../SearchFields/SearchFields';
+
+
+
 
 function Table() {
     const [searchState, searchDispatch] = useAppSearch();
@@ -18,9 +22,6 @@ function Table() {
 
     const [sortField, setSortField] = useState<string>('count'); 
     const [sortOrder, setSortOrder] = useState<SortOrder>(-1);
-
-    
-
     useEffect(()=> {
       console.log("useeffect in Table.ts");
       const fetchData = async() => {
@@ -38,25 +39,52 @@ function Table() {
 
         const data = await db.songs
         .filter((song: Song)=> {
+            
+
           const returnThis:boolean[] = []
           Object.keys(searchState.search_fields).forEach((field:string)=> {
+            const value = searchState.search_fields[field].value
             const subReturnThis:boolean[] = []
-            if (Array.isArray(searchState.search_fields[field].value)) {
-              searchState.search_fields[field].value.forEach((element:string) => {
-                subReturnThis.push((new RegExp(element)).test(song[field === 'artist' ? 'Artist' : field]))
-              });
+            let temp:string[] | SearchFieldOptionType[] = []
+            const song_db_val = song[field === 'artist' ? "Artist" : field] as string;
+            
+            if (Array.isArray(value)) temp = value;
+            else  temp = [value] 
+
+//////////////////////////////
+            if (!temp.length) {
+              subReturnThis.push(true);
+              return
             }
+
+            temp.forEach(x=> {
+
+                if (typeof x === 'string') {
+                  if (x.trim()!=='') subReturnThis.push((new RegExp(x, 'i').test(song_db_val)))
+                  else subReturnThis.push(true)
+                  return
+                }
+                else if (x.key) {
+                  subReturnThis.push((new RegExp(x.key, 'i').test(song_db_val)))
+                  return
+                }
+                subReturnThis.push(true)
+                return
+            })
             returnThis.push(subReturnThis.reduce((prev, curr)=> prev || curr, false))
           })
           return returnThis.reduce((prev, curr)=> prev && curr, true)
         })
+        .reverse()
+        .offset(first)
+        .limit(rows)
         .toArray()
 
         setVisibleData(data);
       }
 
       fetchData();
-    }, [first, rows, sortField, sortOrder])
+    }, [first, rows, searchState.search_fields, sortField, sortOrder])
 
 
     

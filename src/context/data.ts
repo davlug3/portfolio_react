@@ -3,6 +3,7 @@ import { createContext } from "react";
 
 
 export type Song = {
+    [key: string] : string | number |boolean,
     Id: number, 
     Artist: string,
     title: string, 

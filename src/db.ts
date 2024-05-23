@@ -57,7 +57,7 @@ export async function populate (setLoading: (loading: boolean)=> void) {
             setLoading(true);
             db.songs.bulkAdd(
                 data.data
-                .filter((x: unknown, i: number) => (i> 10))
+                // .filter(( _, i: number) => (i< 10))
                 .map((x: SongDataFromApi ) => {
                     const christmas : boolean = x.Genre?.toUpperCase().includes("CHRISTMAS");
                     const opm : boolean = x.Genre?.toUpperCase().includes("OPM");
