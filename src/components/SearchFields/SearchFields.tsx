@@ -70,9 +70,21 @@ function SearchFields() {
                 if (!DynamicElement) return <div key={key}>ERRROORRRR</div>
                 return (
                   
-                    <div className="flex flex-column min-w-min flex-1 max-w-full p-1 mb-2" key={`field_${key}`}>
-                        <label htmlFor="">{field.label}</label>
+                    <div className="flex flex-column w-full flex-1 max-w-full p-1 mb-2" key={`field_${key}`}>
+                        <label htmlFor="">{field.label} {}</label>
                         <DynamicElement
+                          className=''
+                          pt={
+                            {
+                              root: {
+                                className: 'h-2rem  md:h-3rem', 
+                                // style: {maxHeight: '2em'}
+                              },
+                              label: {
+                                className: "py-1 md:py-2"
+                              }
+                            }
+                          }
                           value={field.stage}
                           options={field.options}
                           onChange={
