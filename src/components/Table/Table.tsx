@@ -89,16 +89,12 @@ function Table() {
    const table = useMemo<React.ReactNode>(()=> {
     return (
      <DataTable size='small' value={visibleData} sortField={sortField} sortOrder={sortOrder}>
+          <Column field="count" header="C" sortable></Column>
       {Object.keys(searchState.search_fields).map(field => {
         return <Column key={field} field={field === "artist" ? "Artist" : field} header={searchState.search_fields[field].label} sortable></Column>
       })}
           
-            {/* <Column field="count" header="Score" sortable classNam></Column>
-          <Column field="title" header="Title" sortable></Column>
-          <Column field="Artist" header="Artist" sortable></Column>
-          <Column field="genre" header="Genre" sortable></Column>
-          <Column field="year" header="Year" sortable></Column>
-          <Column field="tempo" header="Tempo" sortable></Column> */}
+
         </DataTable> )
    }, [visibleData, sortField, sortOrder])
 
